@@ -161,7 +161,7 @@ class EmailBuilder:
         return f"""
 <div class="card">
   <div class="card-header" style="background:linear-gradient(135deg,{COLOR_HEADER},{COLOR_ACCENT});text-align:center;">
-    <p style="margin:0;font-size:28px;">🌤️ {greeting}</p>
+    <p style="margin:0;font-size:28px;" dir="rtl">{greeting} 🌤️</p>
     <p style="margin:6px 0 0;font-size:14px;opacity:.85;">{date_he}</p>
     <p style="margin:4px 0 0;font-size:13px;opacity:.8;">בני ברק, ישראל</p>
     {parasha_line}
@@ -223,7 +223,7 @@ class EmailBuilder:
     <p style="margin:0;font-size:16px;font-weight:600;text-align:center;">👗 המלצות לבוש</p>
   </div>
   <div class="card-body">
-    <p style="margin:0;font-size:15px;line-height:1.7;color:{COLOR_TEXT};">{advice}</p>
+    <p style="margin:0;font-size:15px;line-height:1.7;color:{COLOR_TEXT};direction:rtl;text-align:right;">{advice}</p>
   </div>
 </div>"""
 
@@ -269,7 +269,7 @@ class EmailBuilder:
             if key in times:
                 label = ZmanimClient.get_label(key)
                 time_str = ZmanimClient.extract_time(zmanim_data, key) or "—"
-                rows += f"<tr><td style='font-weight:600;'>{label}</td><td>{time_str}</td></tr>"
+                rows += f"<tr><td style='color:{COLOR_MUTED};'>{time_str}</td><td style='font-weight:600;color:{COLOR_HEADER};'>{label}</td></tr>"
 
         if not rows:
             return ""
@@ -280,7 +280,7 @@ class EmailBuilder:
     <p style="margin:0;font-size:16px;font-weight:600;text-align:center;">🕍 זמני היום - בני ברק</p>
   </div>
   <div class="card-body" style="padding:0;">
-    <table><tbody>{rows}</tbody></table>
+    <table dir="rtl"><tbody>{rows}</tbody></table>
   </div>
 </div>"""
 
@@ -324,6 +324,16 @@ class EmailBuilder:
         precips = daily.get("precipitation_sum", [])
         precip_probs = daily.get("precipitation_probability_max", [])
 
+        # Calculate daily average humidity from hourly data
+        hourly_times = weather_data.get("hourly", {}).get("time", [])
+        hourly_humidity = weather_data.get("hourly", {}).get("relative_humidity_2m", [])
+        daily_humidity_map: Dict[str, list] = {}
+        for i, t in enumerate(hourly_times):
+            if i < len(hourly_humidity) and hourly_humidity[i] is not None:
+                day_key = t[:10]
+                daily_humidity_map.setdefault(day_key, []).append(hourly_humidity[i])
+        daily_humidity_avg = {d: sum(v) / len(v) for d, v in daily_humidity_map.items() if v}
+
         rows = ""
         for i, d_str in enumerate(dates):
             try:
@@ -340,6 +350,8 @@ class EmailBuilder:
             precip = precips[i] if i < len(precips) and precips[i] is not None else 0
             prob = precip_probs[i] if i < len(precip_probs) and precip_probs[i] is not None else 0
             precip_str = f"{precip:.0f}מ\"מ ({prob:.0f}%)" if precip > 0 else "יבש"
+            humidity_avg = daily_humidity_avg.get(d_str)
+            humidity_str = f"{humidity_avg:.0f}%" if humidity_avg is not None else "—"
             row_bg = "#fff8e1" if d.weekday() == 4 else ""  # highlight Friday
 
             rows += f"""<tr style="background:{row_bg};">
@@ -348,6 +360,7 @@ class EmailBuilder:
               <td style="color:#c62828;">{max_t}</td>
               <td style="color:{COLOR_ACCENT};">{min_t}</td>
               <td>{precip_str}</td>
+              <td style="color:#1565c0;">{humidity_str}</td>
             </tr>"""
 
         return f"""
@@ -358,7 +371,7 @@ class EmailBuilder:
   <div class="card-body" style="padding:0;">
     <table>
       <thead><tr>
-        <th>יום</th><th>מזג</th><th>מקס'</th><th>מינ'</th><th>משקעים</th>
+        <th>יום</th><th>מזג</th><th>מקס'</th><th>מינ'</th><th>משקעים</th><th>💧 לחות</th>
       </tr></thead>
       <tbody>{rows}</tbody>
     </table>

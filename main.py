@@ -108,7 +108,7 @@ async def run_agent():
         )
 
         date_str = now_israel.strftime("%d/%m/%Y")
-        subject = f"[Rachely] דוח בוקר - {date_str}"
+        subject = f"תחזית מזג אוויר וזמני היום - {date_str}"
         if is_friday:
             subject += " | שבת שלום!"
 
