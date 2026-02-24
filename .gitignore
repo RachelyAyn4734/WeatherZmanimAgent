@@ -1,0 +1,13 @@
+# WeatherZmanimAgent should never commit secrets or cached state
+.env
+state.json
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+.coverage

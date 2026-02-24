@@ -1,0 +1,64 @@
+name: Weather & Zmanim Agent - Bnei Brak
+
+on:
+  schedule:
+    # Runs every 3 hours at UTC times that align with Israel hours
+    # 05:00 UTC = 07:00 IST (winter) / 08:00 IDT (summer)  ← MORNING REPORT
+    # 08:00 UTC = 10:00 IST / 11:00 IDT
+    # 11:00 UTC = 13:00 IST / 14:00 IDT
+    # 14:00 UTC = 16:00 IST / 17:00 IDT
+    # 17:00 UTC = 19:00 IST / 20:00 IDT
+    # 20:00 UTC = 22:00 IST / 23:00 IDT
+    - cron: '0 5,8,11,14,17,20 * * *'
+
+  # Allow manual trigger from GitHub Actions UI
+  workflow_dispatch:
+
+jobs:
+  run-agent:
+    name: Run Weather Agent
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: pip-
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Restore previous weather state (for anomaly detection)
+      - name: Restore weather state
+        uses: actions/cache/restore@v4
+        with:
+          path: state.json
+          key: weather-state-latest
+          restore-keys: |
+            weather-state-
+
+      - name: Run weather agent
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+        run: python main.py
+
+      # Always save state even if the email step fails
+      - name: Save weather state
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: state.json
+          key: weather-state-${{ github.run_number }}
