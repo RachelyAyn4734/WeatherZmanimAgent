@@ -410,6 +410,6 @@ class EmailBuilder:
         ts = now.strftime("%d/%m/%Y %H:%M")
         return f"""
 <div class="footer">
-  <p>נשלח ע"י SoulStream Weather Agent | {ts} שעון ישראל</p>
+  <p>נשלח ע"י Rachely Weather Agent | {ts} שעון ישראל</p>
   <p>נתוני מזג אוויר: Open-Meteo | זמנים: Hebcal | AI: Gemini</p>
 </div>"""

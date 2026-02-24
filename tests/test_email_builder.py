@@ -151,7 +151,7 @@ class TestMorningReport:
             parasha=None,
             now=now,
         )
-        assert "SoulStream Weather Agent" in html
+        assert "Rachely Weather Agent" in html
         assert "Open-Meteo" in html
 
 

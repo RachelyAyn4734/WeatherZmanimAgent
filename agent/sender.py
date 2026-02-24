@@ -10,7 +10,7 @@ from sendgrid.helpers.mail import (
 
 log = logging.getLogger(__name__)
 
-DISPLAY_NAME = "SoulStream Weather"
+DISPLAY_NAME = "Rachely"
 
 
 class EmailSender:
@@ -41,7 +41,7 @@ class EmailSender:
         message.header = [
             Header("List-Unsubscribe", f"<mailto:{self.sender_email}?subject=unsubscribe>"),
             Header("List-Unsubscribe-Post", "List-Unsubscribe=One-Click"),
-            Header("X-Mailer", "SoulStream-Weather-Agent/1.0"),
+            Header("X-Mailer", "Rachely-Weather-Agent/1.0"),
             Header("Precedence", "bulk"),
         ]
 

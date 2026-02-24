@@ -108,7 +108,7 @@ async def run_agent():
         )
 
         date_str = now_israel.strftime("%d/%m/%Y")
-        subject = f"[SoulStream] דוח בוקר - {date_str}"
+        subject = f"[Rachely] דוח בוקר - {date_str}"
         if is_friday:
             subject += " | שבת שלום!"
 
@@ -139,7 +139,7 @@ async def run_agent():
             )
 
             dt_str = now_israel.strftime("%d/%m/%Y %H:%M")
-            subject = f"[SoulStream] התראת מזג אוויר - {dt_str}"
+            subject = f"[Rachely] התראת מזג אוויר - {dt_str}"
 
             success = await email_sender.send(subject, html_body)
             if success:
