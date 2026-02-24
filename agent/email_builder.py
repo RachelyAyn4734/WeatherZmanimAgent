@@ -190,7 +190,7 @@ class EmailBuilder:
         return f"""
 <div class="card">
   <div class="card-header" style="background:{COLOR_ACCENT};">
-    <p style="margin:0;font-size:16px;font-weight:600;">תחזית היום</p>
+    <p style="margin:0;font-size:16px;font-weight:600;text-align:center;">תחזית היום</p>
   </div>
   <div class="card-body">
     <div style="text-align:center;margin-bottom:16px;">
@@ -220,7 +220,7 @@ class EmailBuilder:
         return f"""
 <div class="card">
   <div class="card-header" style="background:{COLOR_GOLD};">
-    <p style="margin:0;font-size:16px;font-weight:600;">👗 המלצות לבוש</p>
+    <p style="margin:0;font-size:16px;font-weight:600;text-align:center;">👗 המלצות לבוש</p>
   </div>
   <div class="card-body">
     <p style="margin:0;font-size:15px;line-height:1.7;color:{COLOR_TEXT};">{advice}</p>
@@ -245,7 +245,7 @@ class EmailBuilder:
         return f"""
 <div class="card">
   <div class="card-header" style="background:{COLOR_HEADER};">
-    <p style="margin:0;font-size:16px;font-weight:600;">⏰ תחזית שעתית (12 שעות)</p>
+    <p style="margin:0;font-size:16px;font-weight:600;text-align:center;">⏰ תחזית שעתית (12 שעות)</p>
   </div>
   <div class="card-body" style="padding:0;">
     <table>
@@ -277,7 +277,7 @@ class EmailBuilder:
         return f"""
 <div class="card">
   <div class="card-header" style="background:#2c3e50;">
-    <p style="margin:0;font-size:16px;font-weight:600;">🕍 זמני היום - בני ברק</p>
+    <p style="margin:0;font-size:16px;font-weight:600;text-align:center;">🕍 זמני היום - בני ברק</p>
   </div>
   <div class="card-body" style="padding:0;">
     <table><tbody>{rows}</tbody></table>
@@ -299,7 +299,7 @@ class EmailBuilder:
         return f"""
 <div class="card">
   <div class="card-header" style="background:linear-gradient(135deg,#4a148c,{COLOR_GOLD});">
-    <p style="margin:0;font-size:16px;font-weight:600;">🕯️ כניסת שבת - {title}</p>
+    <p style="margin:0;font-size:16px;font-weight:600;text-align:center;">🕯️ כניסת שבת - {title}</p>
   </div>
   <div class="card-body">
     <table>
@@ -353,7 +353,7 @@ class EmailBuilder:
         return f"""
 <div class="card">
   <div class="card-header" style="background:{COLOR_HEADER};">
-    <p style="margin:0;font-size:16px;font-weight:600;">📅 תחזית 10 ימים</p>
+    <p style="margin:0;font-size:16px;font-weight:600;text-align:center;">📅 תחזית 10 ימים</p>
   </div>
   <div class="card-body" style="padding:0;">
     <table>
@@ -388,7 +388,7 @@ class EmailBuilder:
         return f"""
 <div class="card">
   <div class="card-header" style="background:{COLOR_ALERT};">
-    <p style="margin:0;font-size:16px;font-weight:600;">פירוט השינויים</p>
+    <p style="margin:0;font-size:16px;font-weight:600;text-align:center;">פירוט השינויים</p>
   </div>
   <div class="card-body">{items_html}</div>
 </div>"""
@@ -399,7 +399,7 @@ class EmailBuilder:
         return f"""
 <div class="card">
   <div class="card-header" style="background:{COLOR_GOLD};">
-    <p style="margin:0;font-size:16px;font-weight:600;">💡 המלצה</p>
+    <p style="margin:0;font-size:16px;font-weight:600;text-align:center;">💡 המלצה</p>
   </div>
   <div class="card-body">
     <p style="margin:0;font-size:15px;line-height:1.7;color:{COLOR_TEXT};">{advice}</p>
