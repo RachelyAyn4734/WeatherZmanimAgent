@@ -248,7 +248,7 @@ class EmailBuilder:
     <p style="margin:0;font-size:16px;font-weight:600;text-align:center;">⏰ תחזית שעתית (12 שעות)</p>
   </div>
   <div class="card-body" style="padding:0;">
-    <table>
+    <table dir="rtl">
       <thead><tr>
         <th>שעה</th><th>מזג</th><th>טמפ'</th><th>רוח</th><th>גשם</th>
       </tr></thead>
@@ -269,7 +269,7 @@ class EmailBuilder:
             if key in times:
                 label = ZmanimClient.get_label(key)
                 time_str = ZmanimClient.extract_time(zmanim_data, key) or "—"
-                rows += f"<tr><td style='color:{COLOR_MUTED};'>{time_str}</td><td style='font-weight:600;color:{COLOR_HEADER};'>{label}</td></tr>"
+                rows += f"<tr><td style='font-weight:600;color:{COLOR_HEADER};'>{label}</td><td style='color:{COLOR_MUTED};'>{time_str}</td></tr>"
 
         if not rows:
             return ""
@@ -369,7 +369,7 @@ class EmailBuilder:
     <p style="margin:0;font-size:16px;font-weight:600;text-align:center;">📅 תחזית 10 ימים</p>
   </div>
   <div class="card-body" style="padding:0;">
-    <table>
+    <table dir="rtl">
       <thead><tr>
         <th>יום</th><th>מזג</th><th>מקס'</th><th>מינ'</th><th>משקעים</th><th>💧 לחות</th>
       </tr></thead>
