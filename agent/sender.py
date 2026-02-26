@@ -1,65 +1,53 @@
-"""SendGrid email sender."""
+﻿"""Gmail SMTP email sender."""
 import os
 import logging
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import (
-    Mail, Email, To, HtmlContent,
-    ReplyTo, Header, MailSettings, TrackingSettings,
-    ClickTracking, OpenTracking
-)
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 log = logging.getLogger(__name__)
 
+SMTP_HOST = "smtp.gmail.com"
+SMTP_PORT = 465
 DISPLAY_NAME = "Rachely"
 
 
 class EmailSender:
     def __init__(self):
-        self.api_key = os.getenv("SENDGRID_API_KEY")
-        self.sender_email = os.getenv("SENDER_EMAIL")
-        self.recipient_email = os.getenv("RECIPIENT_EMAIL")
+        self.email_user = os.getenv("EMAIL_USER", "rachelyayn4734@gmail.com")
+        self.email_password = os.getenv("EMAIL_APP_PASSWORD")
+        self.recipient_email = os.getenv("RECIPIENT_EMAIL", "rachelyayn@gmail.com")
 
     async def send(self, subject: str, html_body: str) -> bool:
-        if not all([self.api_key, self.sender_email, self.recipient_email]):
-            log.error(
-                "Missing config. Need: SENDGRID_API_KEY, SENDER_EMAIL, RECIPIENT_EMAIL"
-            )
+        if not self.email_password:
+            log.error("Missing config. Need: EMAIL_APP_PASSWORD")
             return False
 
-        message = Mail(
-            from_email=Email(self.sender_email, DISPLAY_NAME),
-            to_emails=To(self.recipient_email),
-            subject=subject,
-            html_content=HtmlContent(html_body),
-        )
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = subject
+        msg["From"] = f"{DISPLAY_NAME} <{self.email_user}>"
+        msg["To"] = self.recipient_email
+        msg["Reply-To"] = self.email_user
+        msg["X-Mailer"] = "Rachely-Weather-Agent/1.0"
 
-        # Reply-To — replies go back to the sender
-        message.reply_to = ReplyTo(self.sender_email, DISPLAY_NAME)
-
-        # List-Unsubscribe header — required by Gmail/Yahoo for bulk senders
-        # prevents spam classification
-        message.header = [
-            Header("List-Unsubscribe", f"<mailto:{self.sender_email}?subject=unsubscribe>"),
-            Header("List-Unsubscribe-Post", "List-Unsubscribe=One-Click"),
-            Header("X-Mailer", "Rachely-Weather-Agent/1.0"),
-            Header("Precedence", "bulk"),
-        ]
-
-        # Disable click tracking (tracked links look spammy)
-        tracking = TrackingSettings()
-        tracking.click_tracking = ClickTracking(enable=False, enable_text=False)
-        tracking.open_tracking = OpenTracking(enable=False)
-        message.tracking_settings = tracking
+        msg.attach(MIMEText(html_body, "html", "utf-8"))
 
         try:
-            sg = SendGridAPIClient(self.api_key)
-            response = sg.send(message)
+            with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT) as server:
+                server.login(self.email_user, self.email_password)
+                server.sendmail(self.email_user, self.recipient_email, msg.as_string())
             log.info(
-                "[SendGrid] Email sent | status=%d | subject='%s'",
-                response.status_code,
+                "[Gmail SMTP] Email sent | to=%s | subject='%s'",
+                self.recipient_email,
                 subject,
             )
-            return response.status_code in (200, 201, 202)
+            return True
+        except smtplib.SMTPAuthenticationError as e:
+            log.error("[Gmail SMTP] Authentication failed - check EMAIL_APP_PASSWORD: %s", e)
+            return False
+        except smtplib.SMTPException as e:
+            log.error("[Gmail SMTP] SMTP error: %s", e)
+            return False
         except Exception as e:
-            log.error("[SendGrid] Failed to send email: %s", e)
+            log.error("[Gmail SMTP] Unexpected error sending email: %s", e)
             return False
