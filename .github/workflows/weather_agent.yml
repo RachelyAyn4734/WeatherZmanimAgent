@@ -64,8 +64,8 @@ jobs:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
-          FORCE_MORNING: ${{ github.event_name == 'workflow_dispatch' && inputs.force_morning == 'true' && 'true' || '' }}
-          FORCE_TEST: ${{ github.event_name == 'workflow_dispatch' && inputs.test_mode == 'true' && 'true' || '' }}
+          FORCE_MORNING: ${{ github.event_name == 'workflow_dispatch' && inputs.force_morning && 'true' || '' }}
+          FORCE_TEST: ${{ github.event_name == 'workflow_dispatch' && inputs.test_mode && 'true' || '' }}
         run: python main.py
 
       # Always save state even if the email step fails
