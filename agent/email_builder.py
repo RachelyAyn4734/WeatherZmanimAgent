@@ -27,6 +27,11 @@ DAY_NAMES_HE = {
     3: "חמישי", 4: "שישי", 5: "שבת", 6: "ראשון",
 }
 
+DAY_NAMES_SHORT_HE = {
+    0: "ב'", 1: "ג'", 2: "ד'",
+    3: "ה'", 4: "ו'", 5: "ש'", 6: "א'",
+}
+
 MONTH_NAMES_HE = {
     1: "ינואר", 2: "פברואר", 3: "מרץ", 4: "אפריל",
     5: "מאי", 6: "יוני", 7: "יולי", 8: "אוגוסט",
@@ -36,17 +41,18 @@ MONTH_NAMES_HE = {
 
 def _base_style() -> str:
     return """
-    body { margin:0; padding:0; background:#f4f7fb; font-family: 'Segoe UI', Arial, sans-serif; direction:rtl; }
-    .wrapper { max-width:640px; margin:0 auto; background:#f4f7fb; padding:20px 10px; }
+    body { margin:0; padding:0; background:#f4f7fb; font-family: 'Segoe UI', Arial, sans-serif; direction:rtl; text-align:right; }
+    .wrapper { max-width:640px; margin:0 auto; background:#f4f7fb; padding:20px 10px; direction:rtl; }
     .card { background:#fff; border-radius:16px; box-shadow:0 2px 12px rgba(0,0,0,.08); margin-bottom:16px; overflow:hidden; }
     .card-header { padding:18px 24px; color:#fff; }
-    .card-body { padding:20px 24px; }
-    table { border-collapse:collapse; width:100%; }
-    td, th { padding:8px 12px; font-size:14px; }
-    th { background:#eef2f8; color:#1a3a5c; font-weight:600; }
+    .card-body { padding:20px 24px; direction:rtl; text-align:right; }
+    table { border-collapse:collapse; width:100%; direction:rtl; }
+    td, th { padding:8px 12px; font-size:14px; text-align:right; }
+    th { background:#eef2f8; color:#1a3a5c; font-weight:600; text-align:right; }
     tr:nth-child(even) td { background:#f9fbff; }
     .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:600; }
     .footer { text-align:center; font-size:12px; color:#aaa; padding:12px; }
+    .table-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; width:100%; }
     """
 
 
@@ -148,8 +154,8 @@ class EmailBuilder:
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>{style}</style>
 </head>
-<body>
-  <div class="wrapper">{body}</div>
+<body dir="rtl" style="text-align:right;font-family:Arial,sans-serif;">
+  <div class="wrapper" dir="rtl" style="text-align:right;">{body}</div>
 </body>
 </html>"""
 
@@ -338,8 +344,8 @@ class EmailBuilder:
         for i, d_str in enumerate(dates):
             try:
                 d = date.fromisoformat(d_str)
-                day_heb = DAY_NAMES_HE[d.weekday()]
-                date_display = f"{day_heb} {d.day}/{d.month}"
+                day_short = DAY_NAMES_SHORT_HE[d.weekday()]
+                date_display = f"{day_short} {d.day}/{d.month}"
             except Exception:
                 date_display = d_str
 
@@ -369,12 +375,14 @@ class EmailBuilder:
     <p style="margin:0;font-size:16px;font-weight:600;text-align:center;">📅 תחזית 10 ימים</p>
   </div>
   <div class="card-body" style="padding:0;">
-    <table dir="rtl">
+    <div class="table-scroll">
+    <table dir="rtl" style="width:100%;max-width:100%;min-width:420px;">
       <thead><tr>
-        <th>יום</th><th>מזג</th><th>מקס'</th><th>מינ'</th><th>משקעים</th><th>💧 לחות</th>
+        <th style="text-align:right;">יום</th><th style="text-align:right;">מזג</th><th style="text-align:right;">מקס'</th><th style="text-align:right;">מינ'</th><th style="text-align:right;">משקעים</th><th style="text-align:right;">💧</th>
       </tr></thead>
       <tbody>{rows}</tbody>
     </table>
+    </div>
   </div>
 </div>"""
 
@@ -393,7 +401,7 @@ class EmailBuilder:
         items_html = ""
         for a in anomalies:
             items_html += f"""
-<div style="background:#fff3f3;border-right:4px solid {COLOR_ALERT};padding:12px 16px;margin-bottom:10px;border-radius:8px;">
+<div style="background:#fff3f3;border-right:4px solid {COLOR_ALERT};padding:12px 16px;margin-bottom:10px;border-radius:8px;direction:rtl;text-align:right;">
   <span style="font-size:20px;">{a.get('emoji','⚠️')}</span>
   <span style="font-weight:600;font-size:15px;margin-right:8px;color:{COLOR_ALERT};">{a['message']}</span>
 </div>"""
@@ -415,7 +423,7 @@ class EmailBuilder:
     <p style="margin:0;font-size:16px;font-weight:600;text-align:center;">💡 המלצה</p>
   </div>
   <div class="card-body">
-    <p style="margin:0;font-size:15px;line-height:1.7;color:{COLOR_TEXT};">{advice}</p>
+    <p style="margin:0;font-size:15px;line-height:1.7;color:{COLOR_TEXT};direction:rtl;text-align:right;">{advice}</p>
   </div>
 </div>"""
 
