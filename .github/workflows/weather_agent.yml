@@ -1,9 +1,9 @@
-name: Weather & Zmanim Agent - Bnei Brak
+﻿name: Weather & Zmanim Agent - Bnei Brak
 
 on:
   schedule:
     # Runs every 3 hours at UTC times that align with Israel hours
-    # 05:00 UTC = 07:00 IST (winter) / 08:00 IDT (summer)  ← MORNING REPORT
+    # 05:00 UTC = 07:00 IST (winter) / 08:00 IDT (summer)  ג† MORNING REPORT
     # 08:00 UTC = 10:00 IST / 11:00 IDT
     # 11:00 UTC = 13:00 IST / 14:00 IDT
     # 14:00 UTC = 16:00 IST / 17:00 IDT
@@ -13,6 +13,17 @@ on:
 
   # Allow manual trigger from GitHub Actions UI
   workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Send BOTH morning + alert test emails'
+        required: false
+        default: 'false'
+        type: boolean
+      force_morning:
+        description: 'Force morning report regardless of current hour'
+        required: false
+        default: 'true'
+        type: boolean
 
 jobs:
   run-agent:
@@ -53,6 +64,8 @@ jobs:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
           RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+          FORCE_MORNING: ${{ github.event_name == 'workflow_dispatch' && inputs.force_morning == 'true' && 'true' || '' }}
+          FORCE_TEST: ${{ github.event_name == 'workflow_dispatch' && inputs.test_mode == 'true' && 'true' || '' }}
         run: python main.py
 
       # Always save state even if the email step fails
