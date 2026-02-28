@@ -3,7 +3,7 @@
 on:
   schedule:
     # Runs every 3 hours at UTC times that align with Israel hours
-    # 05:00 UTC = 07:00 IST (winter) / 08:00 IDT (summer)  ג† MORNING REPORT
+    # 05:00 UTC = 07:00 IST (winter) / 08:00 IDT (summer) -> MORNING REPORT
     # 08:00 UTC = 10:00 IST / 11:00 IDT
     # 11:00 UTC = 13:00 IST / 14:00 IDT
     # 14:00 UTC = 16:00 IST / 17:00 IDT
