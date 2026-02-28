@@ -1,4 +1,4 @@
-﻿name: Weather & Zmanim Agent - Bnei Brak
+﻿name: "Weather & Zmanim Agent - Bnei Brak"
 
 on:
   schedule:
